@@ -42,7 +42,11 @@ def test_image_translation():
             add_generation_prompt=True,
             return_dict=True,
             return_tensors="pt"
-        ).to(model.device, dtype=torch.bfloat16)
+        ).to(model.device)
+
+        # Explicitly cast pixel_values to bfloat16 if present, as the model expects it
+        if 'pixel_values' in inputs:
+            inputs['pixel_values'] = inputs['pixel_values'].to(dtype=torch.bfloat16)
         
         print("Generating...")
         input_len = len(inputs['input_ids'][0])

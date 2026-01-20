@@ -24,6 +24,9 @@ def convert_pdf_to_images(pdf_file) -> List[Image.Image]:
             pix = page.get_pixmap(matrix=fitz.Matrix(2, 2)) 
             img_data = pix.tobytes("png")
             image = Image.open(io.BytesIO(img_data))
+            # Convert to RGB mode to ensure compatibility with the model
+            if image.mode != 'RGB':
+                image = image.convert('RGB')
             images.append(image)
             
         doc.close()

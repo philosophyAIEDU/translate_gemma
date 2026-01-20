@@ -1,12 +1,14 @@
 import streamlit as st
 from PIL import Image
 from datetime import datetime
-import json
-import os
 import src.utils as utils
 
 def render_image_tab(translator, languages, history_file):
     st.header("Image Translation")
+
+    if not languages:
+        st.error("No languages available. Please check the languages.json file.")
+        return
 
     col1, col2 = st.columns(2)
     with col1:
@@ -18,6 +20,9 @@ def render_image_tab(translator, languages, history_file):
     
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
+        # Convert to RGB mode to ensure compatibility with the model
+        if image.mode != 'RGB':
+            image = image.convert('RGB')
         st.image(image, caption="Uploaded Image", width=400)
         
         if st.button("Translate Image", key="btn_translate_img"):
@@ -42,4 +47,6 @@ def render_image_tab(translator, languages, history_file):
                     utils.save_history(record, history_file)
 
                 except Exception as e:
-                    st.error(f"An error occurred: {str(e)}")
+                    import traceback
+                    error_msg = traceback.format_exc()
+                    st.error(f"An error occurred: {error_msg}")
