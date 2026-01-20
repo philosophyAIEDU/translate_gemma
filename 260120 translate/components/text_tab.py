@@ -1,12 +1,13 @@
 import streamlit as st
-import pandas as pd
 from datetime import datetime
-import json
-import os
 import src.utils as utils
 
 def render_text_tab(translator, languages, history_file):
     st.header("Text Translation")
+
+    if not languages:
+        st.error("No languages available. Please check the languages.json file.")
+        return
 
     col1, col2 = st.columns(2)
     with col1:
